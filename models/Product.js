@@ -8,8 +8,8 @@ const ProductSchema = new mongoose.Schema(
         description:{type: String, required: true, unique: true},
         price:{type: Number, required: true},
         published:{type: Number, required: true},
-        img:{ data: Buffer, contentType: String, required: true},
-        mp3:{ data: Buffer, contentType: String, required: true},
+        img:{ type: String, required: true},
+        mp3:{ type: String, required: true},
     },
     { timestamps: true }
 );
