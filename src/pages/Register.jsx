@@ -48,6 +48,7 @@ const Outercontainer = styled.div`
 `
 
 const Register = () => {
+    
     return (
         <Outercontainer>
         <Navbar/>
