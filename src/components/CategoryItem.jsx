@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -14,13 +15,16 @@ const Item = styled.div`
     justify-content: center;
     cursor: pointer;
     text-align: center;
+    font-weight: 500;
 `
-
 
 const CategoryItem = ({ item }) => {
     return (
         <Container>
-            <Item>{item.name}</Item>
+            
+            <Link to={`/songs/${item.name}`} style={{ textDecoration: 'underline'}}>
+                <Item>{item.name}</Item>
+            </Link>
         </Container>
     )
 }

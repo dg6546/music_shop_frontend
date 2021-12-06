@@ -1,5 +1,5 @@
 import { Add, Remove } from '@material-ui/icons'
-import React from 'react'
+import React, {useSelector} from 'react'
 import styled from 'styled-components'
 import Navbar from '../components/Navbar'
 import ReactAudioPlayer from 'react-audio-player';
@@ -149,6 +149,7 @@ const SummaryItemPrice = styled.span`
 
 
 const Cart = () => {
+    const cart = useSelector(state => state.cart);
     return (
         <Container>
             <Navbar/>
@@ -160,12 +161,13 @@ const Cart = () => {
                 </Top>
                 <Bottom>
                     <Info>
+                        {cart.products.map((product)=>(
                         <Product>
                             <ProductDetail>
                                 <Image/>
                                 <Details>
-                                    <ProductName><b>Song:</b>Something</ProductName>
-                                    <ProductId><b>ID:</b>1234679</ProductId>
+                                    <ProductName><b>Song:</b> {product.name}</ProductName>
+                                    <ProductId><b>ID:</b> {product.id} </ProductId>
                                     <ReactAudioPlayer
                                         src={process.env.PUBLIC_URL + "/data/mp3/m1.mp3"}
                                         controls
@@ -177,31 +179,13 @@ const Cart = () => {
                             <PriceDetail>
                                 <ProductAmountContainer>
                                     <Add/>
-                                    <ProductAmount>2</ProductAmount>
+                                    <ProductAmount>{product.quantity}]</ProductAmount>
                                     <Remove/>
                                 </ProductAmountContainer>
                                 <ProductPrice>$30</ProductPrice>
                             </PriceDetail>
-                        </Product>
+                        </Product>))}
                         <Hr/>
-                        <Product>
-                            <ProductDetail>
-                                <Image/>
-                                <Details>
-                                    <ProductName><b>Song:</b>Something</ProductName>
-                                    <ProductId><b>ID:</b>1234679</ProductId>
-
-                                </Details>
-                            </ProductDetail>
-                            <PriceDetail>
-                                <ProductAmountContainer>
-                                    <Add/>
-                                    <ProductAmount>2</ProductAmount>
-                                    <Remove/>
-                                </ProductAmountContainer>
-                                <ProductPrice>$30</ProductPrice>
-                            </PriceDetail>
-                        </Product>
                     </Info>
                     <Summary>
                         <SummaryTitle>Order Summary</SummaryTitle>

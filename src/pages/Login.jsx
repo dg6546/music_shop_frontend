@@ -49,7 +49,10 @@ const Outercontainer = styled.div`
   width: 100vw;
 `
 
+
+
 const Login = () => {
+    
     return (
         <Outercontainer>
         <Navbar/>

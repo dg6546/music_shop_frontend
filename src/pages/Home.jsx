@@ -3,11 +3,11 @@ import Category from "../components/Category";
 import Navbar from "../components/Navbar";
 import styled from "styled-components";
 import ItemsPage from "../components/ItemsPage";
+import { useLocation } from 'react-router';
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
 `;
 
 const Left = styled.div`
@@ -21,10 +21,14 @@ const Right = styled.div`
 
 const MainBody = styled.div`
   display: flex;
-  height: 100%;
+
 `;
 
 const Home = () => {
+  
+const location = useLocation();
+const cat = location.pathname.split("/")[2];
+
   return (
     <Container>
       <Navbar />
@@ -32,7 +36,7 @@ const Home = () => {
         <Left>
           <Category />
         </Left>
-        <Right><ItemsPage /></Right>
+        <Right><ItemsPage cat={cat} /></Right>
       </MainBody>
     </Container>
   );

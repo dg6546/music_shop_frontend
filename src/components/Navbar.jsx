@@ -1,14 +1,13 @@
 import { Badge } from "@material-ui/core";
 import { Album, Search, ShoppingCartOutlined } from "@material-ui/icons";
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
-import {mobile} from "../responsive"
+import { mobile } from "../responsive"
 
 const Container = styled.div`
   height: 60px;
   background-color: #4998b3;
-  width: 100vw;
-  height: auto;
 `;
 
 const Wrapper = styled.div`
@@ -17,7 +16,7 @@ const Wrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   
-  ${mobile({padding:"10px", flexDirection:"column", justifyContent:"space-between"})}
+  ${mobile({ padding: "10px", flexDirection: "column", justifyContent: "space-between" })}
 `;
 
 const Left = styled.div`
@@ -36,7 +35,7 @@ const Right = styled.div`
   padding: 5px;
   justify-content: flex-end;
   align-items: center;
-  ${mobile({padding:"10px", justifyContent:"space-between"})}
+  ${mobile({ padding: "10px", justifyContent: "space-between" })}
 `;
 
 const Logo = styled.div`
@@ -44,6 +43,7 @@ const Logo = styled.div`
   font-size: xx-large;
   font-weight: bold;
   cursor: pointer;
+  color: black;
 `;
 
 const SearchContainer = styled.div`
@@ -71,36 +71,45 @@ const MenuItem = styled.div`
   cursor: pointer;
   margin-left: 25px;
   font-weight: bold;
+  color:black;
 `;
 
+
+
 const Navbar = () => {
-    return (
-        <Container>
-            <Wrapper>
-                <Left>
-                    <Logo>
-                        MusicStore
-                        <Album />
-                    </Logo>
-                </Left>
-                <Center>
-                    <SearchContainer>
-                        <Input placeholder="Search music..." />
-                        <Search style={{ color: "gray", fontSize: "16px", cursor: "pointer" }} />
-                    </SearchContainer>
-                </Center>
-                <Right>
-                    <MenuItem>Register</MenuItem>
-                    <MenuItem>Login</MenuItem>
-                    <MenuItem>
-                        <Badge badgeContent={4} color="primary">
-                            <ShoppingCartOutlined />
-                        </Badge>
-                    </MenuItem>
-                </Right>
-            </Wrapper>
-        </Container>
-    );
+  return (
+    <Container>
+      <Wrapper>
+        <Left>
+          <Link to="/" style={{ textDecoration: 'none' }}>
+            <Logo>
+              MusicStore
+              <Album />
+            </Logo>
+          </Link>
+        </Left>
+        <Center>
+          <SearchContainer>
+            <Input placeholder="Search music..." />
+            <Search style={{ color: "gray", fontSize: "16px", cursor: "pointer" }} />
+          </SearchContainer>
+        </Center>
+        <Right>
+          <Link to="/register" style={{ textDecoration: 'none' }}>
+            <MenuItem>Register</MenuItem>
+          </Link>
+          <Link to="/login" style={{ textDecoration: 'none' }}>
+            <MenuItem>Login</MenuItem>
+          </Link>
+          <MenuItem>
+            <Badge badgeContent={4} color="primary">
+              <ShoppingCartOutlined />
+            </Badge>
+          </MenuItem>
+        </Right>
+      </Wrapper>
+    </Container>
+  );
 };
 
 export default Navbar;

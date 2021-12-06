@@ -2,7 +2,8 @@ import { Add, Remove } from '@material-ui/icons'
 import React from 'react'
 import styled from 'styled-components'
 import ReactAudioPlayer from 'react-audio-player';
-
+import { useLocation } from 'react-router';
+import { useState, useEffect } from 'react';
 
 const Container = styled.div`
 
@@ -15,29 +16,40 @@ const Wrapper = styled.div`
 
 const InfoContainer = styled.div`
     flex:1;
+    justify-content: space-between;
+    padding: 5px;
+    flex-wrap: wrap;
 `
 
 const ImgContainer = styled.div`
     flex:1;
+    max-width: 350px;
+    min-width: 150px;
+    padding: 10px;
 `
 
 const Title = styled.h1`
-
+    padding: 5px;
+    font-weight: 500;
+    color: teal;
 `
 const Category = styled.div`
-
+padding: 5px;
 `
 const Composer = styled.div`
-
+padding: 5px;
 `
 const Description = styled.div`
-
+padding: 5px;
 `
 const Published = styled.div`
-
+padding: 5px;
 `
 const Price = styled.div`
-
+padding: 25px 5px 25px 5px;
+font-weight: 500;
+font-size: 20px;
+color: blueviolet;
 `
 
 const Image = styled.img`
@@ -52,6 +64,7 @@ font-weight: 700;
 `
 
 const AddToCartButton = styled.button`
+    margin: 15px 5px;
     padding: 15px;
     border: 1px solid teal;
     background-color: white;
@@ -63,6 +76,7 @@ const AddToCartButton = styled.button`
 `
 
 const AddContainer = styled.div`
+padding: 1px;
     display: flex;
     align-items: center;
     width: 50%;
@@ -80,34 +94,65 @@ const Amount = styled.span`
     margin: 0px 5px;
 `
 
-const ItemDetail = (item) => {
+const ItemDetail = () => {
+    const location = useLocation();
+    const id = location.pathname.split("/")[2];
+    const [song, setSong] = useState({});
+    const [error, setError] = useState(null);
+    useEffect(() => {
+            fetch('http://localhost:5000/api/searchSongs?id=' + id, {
+                'method': 'GET',
+                'Content-Type': 'application/json',
+            })
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        setSong(result);
+                    },
+                    (err) => {
+                        setError(err);
+                    }
+                );
+    }, [id])
+    const currentSong = song[0];
+    if (error) {
+        return (<Container>Error: {error.message}</Container>)
+    }
+    else if (currentSong === undefined) {
+        return (<Container>no result found</Container>)
+    }
+    else{
+    
     return (
         <Container>
-            <ImgContainer> <Image src={process.env.PUBLIC_URL + "/data/img/" + item.img} /> </ImgContainer>
-            <InfoContainer>
-                <Title>{item.title}</Title>
-                <Category>{item.category}</Category>
-                <Composer>Composer: {item.composer}</Composer>
-                <Published>Published: {item.published}</Published>
-                <Description>Description: {item.description}</Description>
-                <Price>${item.price}</Price>
-                <ReactAudioPlayer
-                    src={process.env.PUBLIC_URL + "/data/mp3/" + item.mp3}
-                    controls
-                    controlsList="nodownload"
-                />
-                <AddContainer>
-                    <QuantityContainer>
-                        <Remove />
-                        <Amount>1</Amount>
-                        <Add />
-                    </QuantityContainer>
+            <Wrapper>
+                <ImgContainer> <Image src={process.env.PUBLIC_URL + "/data/img/" + currentSong.image} /> </ImgContainer>
+                <InfoContainer>
+                    <Title>{currentSong.name}</Title>
+                    <Category><b>Category:</b> {currentSong.category}</Category>
+                    <Composer><b>Composer:</b> {currentSong.composer}</Composer>
+                    <Published><b>Published:</b> {currentSong.publish}</Published>
+                    <Description><b>Description:</b> {currentSong.description}</Description>
+                    <Price>${currentSong.price}</Price>
+                    <ReactAudioPlayer
+                        src={process.env.PUBLIC_URL + "/data/mp3/" + currentSong.clip}
+                        controls
+                        controlsList="nodownload"
+                    />
+                    <AddContainer>
+                        <QuantityContainer>
+                            <Remove />
+                            <Amount>1</Amount>
+                            <Add />
+                        </QuantityContainer>
+                        
+                    </AddContainer>
                     <AddToCartButton>Add to Cart</AddToCartButton>
-                </AddContainer>
-
-            </InfoContainer>
+                </InfoContainer>
+            </Wrapper>
         </Container>
     )
+    }
 }
 
 export default ItemDetail
