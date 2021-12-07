@@ -1,7 +1,6 @@
 import { Add, Remove } from '@material-ui/icons'
 import React, {useSelector} from 'react'
 import styled from 'styled-components'
-import Navbar from '../components/Navbar'
 import ReactAudioPlayer from 'react-audio-player';
 
 const Container = styled.div`
@@ -152,7 +151,6 @@ const Cart = () => {
     const cart = useSelector(state => state.cart);
     return (
         <Container>
-            <Navbar/>
             <Wrapper>
                 <Top>
                     <ContinueShoppingButton>Continue shopping</ContinueShoppingButton>

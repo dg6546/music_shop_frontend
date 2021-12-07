@@ -1,6 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import Navbar from '../components/Navbar'
+import { useState } from "react";
+import { Redirect } from 'react-router';
+import axios from "axios";
 
 const Container = styled.div`
     width: 100%;
@@ -51,18 +53,32 @@ const Outercontainer = styled.div`
 
 
 
-const Login = () => {
-    
+const Login = ({username, setUsername, password, setPassword, setAuth}) => {
+    const [error, setError] = useState(false);
+    const [message, setMessage] = useState("");
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        axios.post("http://localhost:5000/api/auth/login",{
+            'username': username,
+            'password': password
+         })
+         .catch(e => {setError(true); setMessage(e.message);})
+         .then(response => {
+                setAuth(true);
+                <Redirect to="/" />
+         })
+    }
     return (
         <Outercontainer>
-        <Navbar/>
         <Container>
             <Wrapper>
                 <Title>Login</Title>
-                <Form>
-                    <Input placeholder="Username" />
-                    <Input placeholder="Password" />
-                    <Button>Login</Button>
+                <Form onSubmit={(e) => handleSubmit(e)}>
+                    <Input placeholder="Username" required onChange={ (e) => setUsername(e.target.value) }/>
+                    <Input placeholder="Password" required onChange={ (e) => setPassword(e.target.value) }/>
+                    <Button type='submit'>Login</Button>
+                    {error && <div>{message}</div>}
                 </Form>
             </Wrapper>
         </Container>

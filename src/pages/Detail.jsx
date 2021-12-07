@@ -1,5 +1,4 @@
 import React from "react";
-import Navbar from "../components/Navbar";
 import styled from "styled-components";
 import ItemDetail from "../components/ItemDetail";
 
@@ -19,7 +18,6 @@ const MainBody = styled.div`
 const Detail = (item) => {
   return (
     <Container>
-      <Navbar />
       <MainBody>
         <ItemDetail item={item}/>
       </MainBody>

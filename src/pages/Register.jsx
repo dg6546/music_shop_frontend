@@ -1,6 +1,8 @@
-import React from 'react'
-import styled from 'styled-components'
-import Navbar from '../components/Navbar'
+import React from 'react';
+import styled from 'styled-components';
+import { registerService } from "../services/Auth"
+import { useState } from "react";
+import axios from "axios";
 
 const Container = styled.div`
     width: 100%;
@@ -47,21 +49,36 @@ const Outercontainer = styled.div`
   width: 100vw;
 `
 
-const Register = () => {
-    
+const Register = ({username, setUsername, password, setPassword}) => {
+    const [email, setEmail] = useState("");
+    const [confirmPassword, setconfirmPassword] = useState("");
+    const [error, setError] = useState("");
+    const [message, setMessage] = useState("");
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        axios.post("http://localhost:5000/api/auth/register",{
+            'username': username,
+            'password': password,
+            'email': email
+         })
+         .catch(e => {console.log(e)})
+         .then(response => {
+             
+         }) 
+    }
     return (
         <Outercontainer>
-        <Navbar/>
         <Container>
         
             <Wrapper>
                 <Title>Create Account</Title>
-                <Form>
-                    <Input placeholder="Username" />
-                    <Input placeholder="Email" />
-                    <Input placeholder="Password" />
-                    <Input placeholder="Confirm Password" />
-                    <Button>Create</Button>
+                <Form onSubmit={(e) => handleSubmit(e)}>
+                    <Input placeholder="Username" required onChange={ (e) => setUsername(e.target.value)} />
+                    <Input placeholder="Email" required onChange={ (e) => setEmail(e.target.value)}/>
+                    <Input placeholder="Password" type="password" required onChange={ (e) => setPassword(e.target.value)}/>
+                    <Input placeholder="Confirm Password" type="password" required onChange={ (e) => setconfirmPassword(e.target.value)}/>
+                    <Button type='submit'>Create</Button>
                 </Form>
             </Wrapper>
         </Container>

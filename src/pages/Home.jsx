@@ -1,6 +1,5 @@
 import React from "react";
 import Category from "../components/Category";
-import Navbar from "../components/Navbar";
 import styled from "styled-components";
 import ItemsPage from "../components/ItemsPage";
 import { useLocation } from 'react-router';
@@ -31,7 +30,6 @@ const cat = location.pathname.split("/")[2];
 
   return (
     <Container>
-      <Navbar />
       <MainBody>
         <Left>
           <Category />

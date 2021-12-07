@@ -76,7 +76,7 @@ const MenuItem = styled.div`
 
 
 
-const Navbar = () => {
+const Navbar = ({auth,  setAuth, username}) => {
   return (
     <Container>
       <Wrapper>
@@ -95,12 +95,22 @@ const Navbar = () => {
           </SearchContainer>
         </Center>
         <Right>
-          <Link to="/register" style={{ textDecoration: 'none' }}>
-            <MenuItem>Register</MenuItem>
-          </Link>
-          <Link to="/login" style={{ textDecoration: 'none' }}>
-            <MenuItem>Login</MenuItem>
-          </Link>
+          {
+            auth ?
+            <div>
+            <MenuItem>{username}</MenuItem>
+            <MenuItem onClick={setAuth(false)}>Logout</MenuItem>
+            </div>
+            :
+            <div>
+              <Link to="/register" style={{ textDecoration: 'none' }}>
+              <MenuItem>Register</MenuItem>
+            </Link>
+            <Link to="/login" style={{ textDecoration: 'none' }}>
+              <MenuItem>Login</MenuItem>
+            </Link>
+            </div>
+          }
           <MenuItem>
             <Badge badgeContent={4} color="primary">
               <ShoppingCartOutlined />

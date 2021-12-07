@@ -4,7 +4,7 @@ import Detail from "./pages/Detail";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Cart from "./pages/Cart";
-import Auth from "./Auth";
+import Navbar from "./components/Navbar"
 
 
 import {
@@ -14,22 +14,22 @@ import {
     Redirect
   } from "react-router-dom";
 import { useState } from "react";
-import { AutoGraph } from '@mui/icons-material';
 
 const App = () => {
     const [auth, setAuth] = useState(false);
-    const [userName, setUserName] = useState('');
-    const [passWord, setPassWord] = useState('');
-
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    console.log(auth);
     return(
             <Router>
+                <Navbar auth={auth} setAuth={setAuth} username={username}/>
                 <Switch>
                     <Route exact path="/"><Home /></Route>
                     <Route path="/songs/:category"><Home /></Route>
                     <Route path="/song/:id"><Detail /></Route>
                     <Route path="/cart"><Cart /></Route>
-                    <Route path="/register">{auth? <Redirect to="/" /> : <Register />}</Route>
-                    <Route path="/login">{auth? <Redirect to="/" /> : <Login />}</Route>
+                    <Route path="/register">{auth? <Redirect to="/" /> : <Register username={username} setUsername={setUsername} password={password} setPassword={setPassword}/>}</Route>
+                    <Route path="/login">{auth? <Redirect to="/" /> : <Login username={username} setUsername={setUsername} password={password} setPassword={setPassword} setAuth={setAuth}  />}</Route>
                 </Switch>
             </Router>
     );
