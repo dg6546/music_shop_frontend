@@ -27,7 +27,6 @@ const Home = () => {
   
 const location = useLocation();
 const cat = location.pathname.split("/")[2];
-
   return (
     <Container>
       <MainBody>

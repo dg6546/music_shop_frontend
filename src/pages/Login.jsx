@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
-import { useState } from "react";
 import { Redirect } from 'react-router';
 import axios from "axios";
+import {login} from "../actions/index"
+import { useDispatch } from 'react-redux';
+import { CatchingPokemon } from '@mui/icons-material';
+
 
 const Container = styled.div`
     width: 100%;
@@ -51,37 +54,69 @@ const Outercontainer = styled.div`
   width: 100vw;
 `
 
+const ErrorMessage = styled.div`
+    color: red;
+`
 
 
-const Login = ({username, setUsername, password, setPassword, setAuth}) => {
+const Login = () => {
     const [error, setError] = useState(false);
     const [message, setMessage] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+
+    const dispatch = useDispatch();
+    
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post("http://localhost:5000/api/auth/login",{
+        const url = "http://localhost:5000/api/auth/login";
+
+        const params = {
             'username': username,
             'password': password
-         })
-         .catch(e => {setError(true); setMessage(e.message);})
-         .then(response => {
-                setAuth(true);
+        }
+        axios.defaults.withCredentials = true;
+        const config = {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            //credentials:'include',
+            withCredentials: true
+        }
+
+        axios.post(url, params, config)
+            .then((result) => {
+                console.log(result.status);
+                console.log(result.headers);
+                console.log(result.data);
+                console.log(result.config);
+                dispatch(login(result.data.username));
                 <Redirect to="/" />
-         })
+            })
+            .catch((err) => {
+                setError(true);
+                if(err.response){
+                    setMessage(err.response.data);
+                }else{
+                    setMessage("failed");
+                }
+                console.log(err);
+            })
     }
     return (
         <Outercontainer>
-        <Container>
-            <Wrapper>
-                <Title>Login</Title>
-                <Form onSubmit={(e) => handleSubmit(e)}>
-                    <Input placeholder="Username" required onChange={ (e) => setUsername(e.target.value) }/>
-                    <Input placeholder="Password" required onChange={ (e) => setPassword(e.target.value) }/>
-                    <Button type='submit'>Login</Button>
-                    {error && <div>{message}</div>}
-                </Form>
-            </Wrapper>
-        </Container>
+            <Container>
+                <Wrapper>
+                    <Title>Login</Title>
+                    <Form onSubmit={(e) => handleSubmit(e)}>
+                        <Input placeholder="Username" required onChange={(e) => setUsername(e.target.value)} />
+                        <Input placeholder="Password" required onChange={(e) => setPassword(e.target.value)} />
+                        <Button type='submit'>Login</Button>
+                        {error && <ErrorMessage>{message}</ErrorMessage>}
+                    </Form>
+                </Wrapper>
+            </Container>
         </Outercontainer>
     )
 }

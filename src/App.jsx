@@ -5,7 +5,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Cart from "./pages/Cart";
 import Navbar from "./components/Navbar"
-
+import { useSelector } from 'react-redux';
 
 import {
     BrowserRouter as Router,
@@ -13,23 +13,20 @@ import {
     Route,
     Redirect
   } from "react-router-dom";
-import { useState } from "react";
 
 const App = () => {
-    const [auth, setAuth] = useState(false);
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    console.log(auth);
+    
+    const isLogged = useSelector(state => state.isLogged);
     return(
             <Router>
-                <Navbar auth={auth} setAuth={setAuth} username={username}/>
+                <Navbar />
                 <Switch>
                     <Route exact path="/"><Home /></Route>
                     <Route path="/songs/:category"><Home /></Route>
                     <Route path="/song/:id"><Detail /></Route>
                     <Route path="/cart"><Cart /></Route>
-                    <Route path="/register">{auth? <Redirect to="/" /> : <Register username={username} setUsername={setUsername} password={password} setPassword={setPassword}/>}</Route>
-                    <Route path="/login">{auth? <Redirect to="/" /> : <Login username={username} setUsername={setUsername} password={password} setPassword={setPassword} setAuth={setAuth}  />}</Route>
+                    <Route path="/register">{isLogged? <Redirect to="/" /> : <Register />}</Route>
+                    <Route path="/login">{isLogged? <Redirect to="/" /> : <Login />}</Route>
                 </Switch>
             </Router>
     );

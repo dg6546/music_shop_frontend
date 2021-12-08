@@ -4,7 +4,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { mobile } from "../responsive"
-
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import {logout} from "../actions/index"
 const Container = styled.div`
   height: 60px;
   background-color: #4998b3;
@@ -74,9 +76,15 @@ const MenuItem = styled.div`
   color:black;
 `;
 
+const UsernameSpan = styled.span`
+  
+`
 
 
-const Navbar = ({auth,  setAuth, username}) => {
+const Navbar = () => {
+  const isLogged = useSelector(state => state.userReducer.isLogged);
+  const username = useSelector(state => state.userReducer.username);
+  const dispatch = useDispatch();
   return (
     <Container>
       <Wrapper>
@@ -94,29 +102,27 @@ const Navbar = ({auth,  setAuth, username}) => {
             <Search style={{ color: "gray", fontSize: "16px", cursor: "pointer" }} />
           </SearchContainer>
         </Center>
-        <Right>
           {
-            auth ?
-            <div>
-            <MenuItem>{username}</MenuItem>
-            <MenuItem onClick={setAuth(false)}>Logout</MenuItem>
-            </div>
+            isLogged ?
+            <Right>
+            <MenuItem><UsernameSpan>{username}</UsernameSpan></MenuItem>
+            <MenuItem onClick={()=>{dispatch(logout())}}>Logout</MenuItem>
+            </Right>
             :
-            <div>
+            <Right>
               <Link to="/register" style={{ textDecoration: 'none' }}>
               <MenuItem>Register</MenuItem>
             </Link>
             <Link to="/login" style={{ textDecoration: 'none' }}>
               <MenuItem>Login</MenuItem>
             </Link>
-            </div>
+            </Right>
           }
           <MenuItem>
             <Badge badgeContent={4} color="primary">
               <ShoppingCartOutlined />
             </Badge>
           </MenuItem>
-        </Right>
       </Wrapper>
     </Container>
   );

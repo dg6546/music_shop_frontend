@@ -7,17 +7,17 @@ const userReducer = (state = initialState, action) => {
     switch(action.type){
         case 'SIGN_IN':
             return {
-                userame: action.userame,
+                username: action.payload,
                 isLogged: true
             }
         case 'SIGN_OUT':
             return {
-                userame: "",
+                username: "",
                 isLogged: false
             }
         default:
             return {
-                userame: "",
+                username: "",
                 isLogged: false
             }
     }

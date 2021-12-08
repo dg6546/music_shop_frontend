@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { registerService } from "../services/Auth"
 import { useState } from "react";
 import axios from "axios";
 
@@ -49,7 +48,9 @@ const Outercontainer = styled.div`
   width: 100vw;
 `
 
-const Register = ({username, setUsername, password, setPassword}) => {
+const Register = () => {
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
     const [confirmPassword, setconfirmPassword] = useState("");
     const [error, setError] = useState("");
