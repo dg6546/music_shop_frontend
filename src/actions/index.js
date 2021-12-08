@@ -1,7 +1,7 @@
-export const login = (user) =>{
+export const login = (user, _id) =>{
     return {
         type: 'SIGN_IN',
-        payload: user
+        payload: {user, _id}
     }
 }
 

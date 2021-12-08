@@ -16,7 +16,7 @@ import {
 
 const App = () => {
     
-    const isLogged = useSelector(state => state.isLogged);
+    const isLogged = useSelector(state => state.userReducer.isLogged);
     return(
             <Router>
                 <Navbar />

@@ -4,7 +4,6 @@ import { Redirect } from 'react-router';
 import axios from "axios";
 import {login} from "../actions/index"
 import { useDispatch } from 'react-redux';
-import { CatchingPokemon } from '@mui/icons-material';
 
 
 const Container = styled.div`
@@ -76,7 +75,6 @@ const Login = () => {
             'username': username,
             'password': password
         }
-        axios.defaults.withCredentials = true;
         const config = {
             headers: {
                 'Content-Type': 'application/json'
@@ -87,19 +85,14 @@ const Login = () => {
 
         axios.post(url, params, config)
             .then((result) => {
-                console.log(result.status);
-                console.log(result.headers);
-                console.log(result.data);
-                console.log(result.config);
-                dispatch(login(result.data.username));
-                <Redirect to="/" />
+                dispatch(login(result.data.username,result.data._id ));
             })
             .catch((err) => {
                 setError(true);
                 if(err.response){
                     setMessage(err.response.data);
                 }else{
-                    setMessage("failed");
+                    setMessage("failed connecting to server");
                 }
                 console.log(err);
             })
@@ -111,7 +104,7 @@ const Login = () => {
                     <Title>Login</Title>
                     <Form onSubmit={(e) => handleSubmit(e)}>
                         <Input placeholder="Username" required onChange={(e) => setUsername(e.target.value)} />
-                        <Input placeholder="Password" required onChange={(e) => setPassword(e.target.value)} />
+                        <Input placeholder="Password" type="password" required onChange={(e) => setPassword(e.target.value)} />
                         <Button type='submit'>Login</Button>
                         {error && <ErrorMessage>{message}</ErrorMessage>}
                     </Form>

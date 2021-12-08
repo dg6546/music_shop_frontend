@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useState } from "react";
 import axios from "axios";
+import { Redirect } from 'react-router';
 
 const Container = styled.div`
     width: 100%;
@@ -48,6 +49,10 @@ const Outercontainer = styled.div`
   width: 100vw;
 `
 
+const ErrorMessage = styled.div`
+    color: red;
+`
+
 const Register = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -58,15 +63,30 @@ const Register = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post("http://localhost:5000/api/auth/register",{
+        if (password !== confirmPassword){
+            setError(true);
+            setMessage("password and confirm password do not match");
+        }
+        else{
+            axios.post("http://localhost:5000/api/auth/register",{
             'username': username,
             'password': password,
             'email': email
          })
-         .catch(e => {console.log(e)})
-         .then(response => {
-             
-         }) 
+         .catch((err) => {
+            setError(true);
+            if(err.response){
+                setMessage(err.response.data);
+            }else{
+                setMessage("failed");
+            }
+            console.log(err);
+        })
+        .then((result)=>{
+            window.location.replace("/login");
+        })
+        }
+
     }
     return (
         <Outercontainer>
@@ -80,6 +100,7 @@ const Register = () => {
                     <Input placeholder="Password" type="password" required onChange={ (e) => setPassword(e.target.value)}/>
                     <Input placeholder="Confirm Password" type="password" required onChange={ (e) => setconfirmPassword(e.target.value)}/>
                     <Button type='submit'>Create</Button>
+                    {error && <ErrorMessage>{message}</ErrorMessage>}
                 </Form>
             </Wrapper>
         </Container>
