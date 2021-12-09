@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import ReactAudioPlayer from 'react-audio-player';
-import { useSelector, useDispatch  } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import axios from 'axios';
 import { getCart } from "../actions/index"
 import { Delete } from '@material-ui/icons';
@@ -127,8 +127,8 @@ const SummaryItem = styled.div`
     margin: 30px 0px;
     display: flex;
     justify-content: space-between;
-    font-weight: ${props=>props.type === "total" && "500"};
-    font-size: ${props=>props.type === "total" && "24px"};
+    font-weight: ${props => props.type === "total" && "500"};
+    font-size: ${props => props.type === "total" && "24px"};
 `
 
 const SummaryCheckoutButton = styled.button`
@@ -157,107 +157,110 @@ const Cart = () => {
     const cart = useSelector(state => state.cartReducer);
     const dispatch = useDispatch();
 
-    function deleteItem(_id){
-        
-        axios.post("http://localhost:5000/api/cart/delete",{
-            id: _id
-        },{headers: {
-            'Content-Type': 'application/json'
-        }})
-        .catch((err) => console.log("Cart error "+err))
-        .then((respond) =>{
-            console.log(respond);
-                try{
+    function deleteItem(id) {
+        console.log(id)
+        axios.post("http://localhost:5000/api/cart/delete", {
+            id: String(id)
+        }, {
+            headers: {
+                'Content-Type': 'application/json'
+            }, withCredentials: true
+        })
+            .catch((err) => console.log("Cart error " + err))
+            .then((res) => {
+                console.log(res);
+                try {
                     dispatch(
                         getCart(
-                            respond.data._id,
-                            respond.data.totalPrice,
-                            respond.data.totalQuantity,
-                            respond.data.products
-                            )
-                    );
-                }catch(err){
-                    console.log(err)
-                }
-                
-            })
-    }
-    useEffect(() => {
-            
-        axios.post("http://localhost:5000/api/cart",{} ,{headers: {
-            'Content-Type': 'application/json'
-        },
-        //credentials:'include',
-        withCredentials: true
-    })
-        .catch((err) => console.log("Cart error "+err))
-        .then((res) =>{
-                try{
-                    dispatch(
-                        getCart(
-                            res.data._id,
+                            res.data.userId,
                             res.data.totalPrice,
                             res.data.totalQuantity,
                             res.data.products
-                            )
+                        )
                     );
-                }catch(err){
+                } catch (err) {
                     console.log(err)
                 }
-                
+
+            })
+    }
+    useEffect(() => {
+
+        axios.post("http://localhost:5000/api/cart", {}, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            withCredentials: true
+        })
+            .catch((err) => console.log("Cart error " + err))
+            .then((res) => {
+                try {
+                    dispatch(
+                        getCart(
+                            res.data.user,
+                            res.data.totalPrice,
+                            res.data.totalQuantity,
+                            res.data.products
+                        )
+                    );
+                } catch (err) {
+                    console.log(err)
+                }
+
             })
     }, [dispatch])
-    
-    if (cart.totalQuantity > 0){
-    return (
-        <Container>
-            <Wrapper>
-                <Top>
-                    <ContinueShoppingButton onClick={()=>window.location.replace("/")}>Continue shopping</ContinueShoppingButton>
-                    <Title>Your Cart ({cart.totalQuantity})</Title>
-                    <CheckoutButton onClick={()=>window.location.replace("/checkout")}>CheckOut</CheckoutButton>
-                </Top>
-                <Bottom>
-                    <Info>
-                        {cart.products.map((product)=>(
-                        <Product>
-                            <ProductDetail>
-                                <Image src={process.env.PUBLIC_URL + "/data/img/" + product.image}/>
-                                <Details>
-                                    <ProductName><b>Song:</b> {product.name}</ProductName>
-                                    <ProductId><b>ID:</b> {product._id} </ProductId>
-                                    <ReactAudioPlayer
-                                        src={process.env.PUBLIC_URL + "/data/mp3/" + product.clip}
-                                        controls
-                                        controlsList="nodownload"
-                                        style={{padding:'5px'}}
-                                    />
-                                </Details>
-                            </ProductDetail>
-                            <PriceDetail>
-                                <UnitPriceDiv>${product.unitPrice}</UnitPriceDiv>
-                                <ProductAmountContainer>
-                                    <ProductAmount>Quantity: {product.quantity}</ProductAmount>
-                                    <Delete onClick={()=>{console.log("product id: " + product._id) ;deleteItem(product._id)}} style={{cursor: 'pointer'}}></Delete>
-                                </ProductAmountContainer>
-                                <ProductPrice>Subtotal: {product.unitPrice*product.quantity}</ProductPrice>
-                            </PriceDetail>
-                        </Product>))}
-                        <Hr/>
-                    </Info>
-                    <Summary>
-                        <SummaryTitle>Order Summary</SummaryTitle>
-                        <SummaryItem type="total">
-                            <SummaryItemText>Total</SummaryItemText>
-                            <SummaryItemPrice>${cart.totalPrice}</SummaryItemPrice>
-                        </SummaryItem>
-                        <SummaryCheckoutButton onClick={()=>window.location.replace("/checkout")}>CheckOut Now</SummaryCheckoutButton>
-                    </Summary>
-                </Bottom>
-            </Wrapper>
-        </Container>
-    )}else{
-        return(
+
+    if (cart.totalQuantity > 0) {
+        return (
+            <Container>
+                <Wrapper>
+                    <Top>
+                        <ContinueShoppingButton onClick={() => window.location.replace("/")}>Continue shopping</ContinueShoppingButton>
+                        <Title>Your Cart ({cart.totalQuantity})</Title>
+                        <CheckoutButton onClick={() => window.location.replace("/checkout")}>CheckOut</CheckoutButton>
+                    </Top>
+                    <Bottom>
+                        <Info>
+                            {cart.products.map((product) => (
+                                <Product>
+                                    <ProductDetail>
+                                        <Image src={process.env.PUBLIC_URL + "/data/img/" + product.image} />
+                                        <Details>
+                                            <ProductName><b>Song:</b> {product.name}</ProductName>
+                                            <ProductId><b>ID:</b> {product.productID} </ProductId>
+                                            <ReactAudioPlayer
+                                                src={process.env.PUBLIC_URL + "/data/mp3/" + product.clip}
+                                                controls
+                                                controlsList="nodownload"
+                                                style={{ padding: '5px' }}
+                                            />
+                                        </Details>
+                                    </ProductDetail>
+                                    <PriceDetail>
+                                        <UnitPriceDiv>${product.unitPrice}</UnitPriceDiv>
+                                        <ProductAmountContainer>
+                                            <ProductAmount>Quantity: {product.quantity}</ProductAmount>
+                                            <Delete onClick={() => { deleteItem(product.productID) }} style={{ cursor: 'pointer' }}></Delete>
+                                        </ProductAmountContainer>
+                                        <ProductPrice>Subtotal: {product.unitPrice * product.quantity}</ProductPrice>
+                                    </PriceDetail>
+                                </Product>))}
+                            <Hr />
+                        </Info>
+                        <Summary>
+                            <SummaryTitle>Order Summary</SummaryTitle>
+                            <SummaryItem type="total">
+                                <SummaryItemText>Total</SummaryItemText>
+                                <SummaryItemPrice>${cart.totalPrice}</SummaryItemPrice>
+                            </SummaryItem>
+                            <SummaryCheckoutButton onClick={() => window.location.replace("/checkout")}>CheckOut Now</SummaryCheckoutButton>
+                        </Summary>
+                    </Bottom>
+                </Wrapper>
+            </Container>
+        )
+    } else {
+        return (
             <div>Nothing in your cart</div>
         )
     }
