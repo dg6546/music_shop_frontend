@@ -1,59 +1,43 @@
-import React, { useEffect } from 'react'
-import styled from 'styled-components'
-import ReactAudioPlayer from 'react-audio-player';
+import React, { useEffect, useState }  from 'react';
+import styled from "styled-components";
 import { useSelector, useDispatch  } from "react-redux";
-import axios from 'axios';
 import { getCart } from "../actions/index"
-import { Delete } from '@material-ui/icons';
+import axios from 'axios';
+
 
 const Container = styled.div`
-height:100vh;
-width: 100vw;
-`
-
-const Wrapper = styled.div`
-padding: 20px;
-`
-
-const Top = styled.div`
     display: flex;
-    align-content: center;
-    justify-content: space-between;
-    padding: 20px;
+    min-width: 150px;
+    min-height: 100px;
+    padding: 10px;
+    margin: 10px;
+    width: 50%;
+    flex-direction: column;
 `
 
-const ContinueShoppingButton = styled.button`
-    margin-top: 20px;
-    border: none;
-    padding: 15px 20px;
-    background-color: teal;
-    color: white;
-    cursor: pointer;
+const Input = styled.input`
+    
 `
 
-const CheckoutButton = styled.button`
-    border: 1px solid teal;
-    padding: 15px 20px;
-    margin-top: 20px;
-    background-color: black;
-    color: white;
-    cursor: pointer;
-    font-size: 18px;
+const InputContainer = styled.div`
+    
 `
+
 const Title = styled.h1`
-    font-weight: 300;
-    text-align: center;
+    
 `
 
-const Bottom = styled.div`
-    display: flex;
-    justify-content: space-between;
+const Form = styled.form`
+    
 `
 
-const Info = styled.div`
-    flex:3;
+const FormContainer = styled.div`
+    flex: 1;
 `
 
+const Button = styled.button`
+    
+`
 
 const Product = styled.div`
     display: flex;
@@ -116,7 +100,6 @@ const Summary = styled.div`
     border: 0.5px solid lightgray;
     border-radius: 10px;
     padding: 20px;
-    height: 50vh;
 `
 
 const SummaryTitle = styled.h1`
@@ -131,15 +114,6 @@ const SummaryItem = styled.div`
     font-size: ${props=>props.type === "total" && "24px"};
 `
 
-const SummaryCheckoutButton = styled.button`
-    border: 1px solid teal;
-    padding: 15px;
-    background-color: black;
-    color: white;
-    cursor: pointer;
-    font-size: 18px;
-    width: 100%;
-`
 
 const SummaryItemText = styled.span`
 
@@ -153,35 +127,15 @@ const UnitPriceDiv = styled.div`
     font-weight: 200;
 `
 
-const Cart = () => {
-    const cart = useSelector(state => state.cartReducer);
-    const dispatch = useDispatch();
+const Info = styled.div`
+    flex:1;
+    justify-content: space-between;
+    justify-items: space-between;
+`
 
-    function deleteItem(_id){
-        
-        axios.post("http://localhost:5000/api/cart/delete",{
-            id: _id
-        },{headers: {
-            'Content-Type': 'application/json'
-        }})
-        .catch((err) => console.log("Cart error "+err))
-        .then((respond) =>{
-            console.log(respond);
-                try{
-                    dispatch(
-                        getCart(
-                            respond.data._id,
-                            respond.data.totalPrice,
-                            respond.data.totalQuantity,
-                            respond.data.products
-                            )
-                    );
-                }catch(err){
-                    console.log(err)
-                }
-                
-            })
-    }
+const Checkout = () => {
+    const dispatch = useDispatch();
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
             
         axios.post("http://localhost:5000/api/cart",{} ,{headers: {
@@ -192,6 +146,7 @@ const Cart = () => {
     })
         .catch((err) => console.log("Cart error "+err))
         .then((res) =>{
+            console.log(res);
                 try{
                     dispatch(
                         getCart(
@@ -201,66 +156,77 @@ const Cart = () => {
                             res.data.products
                             )
                     );
+                    setLoading(false);
                 }catch(err){
                     console.log(err)
                 }
                 
             })
     }, [dispatch])
-    
-    if (cart.totalQuantity > 0){
-    return (
+
+    const cart = useSelector(state => state.cartReducer);
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [fullname, setFullname] = useState("");
+    const [companyname, setCompanyname] = useState("");
+    const [address1, setAddress1] = useState("");
+    const [address2, setAddress2] = useState("");
+    const [city, setCity] = useState("");
+    const [region, setRegion] = useState("");
+    const [country, setCountry] = useState("");
+    const [zipCode, setzipCode] = useState("");
+
+    console.log(cart);
+    if (loading){
+        return ("loading");
+    }
+    else return (
         <Container>
-            <Wrapper>
-                <Top>
-                    <ContinueShoppingButton onClick={()=>window.location.replace("/")}>Continue shopping</ContinueShoppingButton>
-                    <Title>Your Cart ({cart.totalQuantity})</Title>
-                    <CheckoutButton onClick={()=>window.location.replace("/checkout")}>CheckOut</CheckoutButton>
-                </Top>
-                <Bottom>
-                    <Info>
-                        {cart.products.map((product)=>(
+            <FormContainer>
+            <Form>
+                <Title>Create Account</Title>
+                <InputContainer> Username <Input placeholder="required" onChange={(e)=>{setUsername(e.target.value)}} /></InputContainer>
+                <InputContainer> Password <Input placeholder="required" onChange={(e)=>{setPassword(e.target.value)}} /></InputContainer>
+                <Title>Delivery Address</Title>
+                <InputContainer> Full Name <Input placeholder="required" required onChange={(e)=>{setFullname(e.target.value)}} /></InputContainer>
+                <InputContainer> Company Name <Input placeholder="" onChange={(e)=>{setCompanyname(e.target.value)}} /></InputContainer>
+                <InputContainer> Address line 1 <Input placeholder="required" required onChange={(e)=>{setAddress1(e.target.value)}} /></InputContainer>
+                <InputContainer> Address line 2 <Input placeholder="" onChange={(e)=>{setAddress2(e.target.value)}} /></InputContainer>
+                <InputContainer> City <Input placeholder="required" required onChange={(e)=>{setCity(e.target.value)}} /></InputContainer>
+                <InputContainer> Region/State/District <Input placeholder="" onChange={(e)=>{setRegion(e.target.value)}} /></InputContainer>
+                <InputContainer> Country <Input placeholder="required" onChange={(e)=>{setCountry(e.target.value)}} /></InputContainer>
+                <InputContainer> postal zip code <Input placeholder="required" required onChange={(e)=>{setzipCode(e.target.value)}} /></InputContainer>
+                <Button>Submit</Button>
+            </Form>
+            </FormContainer>
+            <Hr/>
+            <Info>
+            {cart.products.map((product)=>(
                         <Product>
                             <ProductDetail>
                                 <Image src={process.env.PUBLIC_URL + "/data/img/" + product.image}/>
                                 <Details>
                                     <ProductName><b>Song:</b> {product.name}</ProductName>
                                     <ProductId><b>ID:</b> {product._id} </ProductId>
-                                    <ReactAudioPlayer
-                                        src={process.env.PUBLIC_URL + "/data/mp3/" + product.clip}
-                                        controls
-                                        controlsList="nodownload"
-                                        style={{padding:'5px'}}
-                                    />
                                 </Details>
                             </ProductDetail>
                             <PriceDetail>
                                 <UnitPriceDiv>${product.unitPrice}</UnitPriceDiv>
                                 <ProductAmountContainer>
                                     <ProductAmount>Quantity: {product.quantity}</ProductAmount>
-                                    <Delete onClick={()=>{console.log("product id: " + product._id) ;deleteItem(product._id)}} style={{cursor: 'pointer'}}></Delete>
                                 </ProductAmountContainer>
                                 <ProductPrice>Subtotal: {product.unitPrice*product.quantity}</ProductPrice>
                             </PriceDetail>
                         </Product>))}
-                        <Hr/>
-                    </Info>
-                    <Summary>
-                        <SummaryTitle>Order Summary</SummaryTitle>
+                        <Summary>
                         <SummaryItem type="total">
                             <SummaryItemText>Total</SummaryItemText>
                             <SummaryItemPrice>${cart.totalPrice}</SummaryItemPrice>
                         </SummaryItem>
-                        <SummaryCheckoutButton onClick={()=>window.location.replace("/checkout")}>CheckOut Now</SummaryCheckoutButton>
                     </Summary>
-                </Bottom>
-            </Wrapper>
+            </Info>
         </Container>
-    )}else{
-        return(
-            <div>Nothing in your cart</div>
-        )
-    }
+    )
 }
 
-export default Cart
+export default Checkout

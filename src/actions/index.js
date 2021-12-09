@@ -10,3 +10,10 @@ export const logout = () =>{
         type: 'SIGN_OUT'
     }
 }
+
+export const getCart = (_id, totalPrice, totalQuantity, products) =>{
+    return {
+        type: 'GET_CART',
+        payload: {_id, totalPrice, totalQuantity, products}
+    }
+}

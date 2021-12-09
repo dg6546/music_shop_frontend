@@ -5,7 +5,8 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Cart from "./pages/Cart";
 import Navbar from "./components/Navbar"
-import { useSelector } from 'react-redux';
+import Cookies from 'universal-cookie';
+import Checkout from './pages/Checkout';
 
 import {
     BrowserRouter as Router,
@@ -15,8 +16,8 @@ import {
   } from "react-router-dom";
 
 const App = () => {
-    
-    const isLogged = useSelector(state => state.userReducer.isLogged);
+    const cookies = new Cookies();
+    const isLogged = cookies.get('username') === undefined ? false : true;
     return(
             <Router>
                 <Navbar />
@@ -27,6 +28,7 @@ const App = () => {
                     <Route path="/cart"><Cart /></Route>
                     <Route path="/register">{isLogged? <Redirect to="/" /> : <Register />}</Route>
                     <Route path="/login">{isLogged? <Redirect to="/" /> : <Login />}</Route>
+                    <Route path="/checkout"> <Checkout /></Route>
                 </Switch>
             </Router>
     );

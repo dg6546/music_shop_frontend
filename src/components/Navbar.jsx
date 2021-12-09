@@ -5,8 +5,8 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { mobile } from "../responsive"
 import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import {logout} from "../actions/index"
+import Cookies from 'universal-cookie';
+
 const Container = styled.div`
   height: 60px;
   background-color: #4998b3;
@@ -77,14 +77,15 @@ const MenuItem = styled.div`
 `;
 
 const UsernameSpan = styled.span`
-  
+  cursor:default ;
 `
 
 
 const Navbar = () => {
-  const isLogged = useSelector(state => state.userReducer.isLogged);
-  const username = useSelector(state => state.userReducer.username);
-  const dispatch = useDispatch();
+  const cookies = new Cookies();
+  const isLogged = cookies.get('username') === undefined ? false : true;
+  const username = cookies.get('username'); 
+  const cart = useSelector(state => state.cartReducer);
   return (
     <Container>
       <Wrapper>
@@ -106,7 +107,10 @@ const Navbar = () => {
             isLogged ?
             <Right>
             <MenuItem><UsernameSpan>{username}</UsernameSpan></MenuItem>
-            <MenuItem onClick={()=>{dispatch(logout())}}>Logout</MenuItem>
+            <MenuItem onClick={()=>{
+              cookies.remove('username');
+              window.location.replace("/");
+            }}>Logout</MenuItem>
             </Right>
             :
             <Right>
@@ -119,8 +123,10 @@ const Navbar = () => {
             </Right>
           }
           <MenuItem>
-            <Badge badgeContent={4} color="primary">
+            <Badge badgeContent={cart.totalQuantity} color="primary">
+              <Link to="/cart" style={{ color: 'black', textDecoration: 'none' }}>
               <ShoppingCartOutlined />
+              </Link>
             </Badge>
           </MenuItem>
       </Wrapper>

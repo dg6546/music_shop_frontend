@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { Redirect } from 'react-router';
 import axios from "axios";
-import {login} from "../actions/index"
-import { useDispatch } from 'react-redux';
+import Cookies from 'universal-cookie';
 
 
 const Container = styled.div`
@@ -63,10 +61,9 @@ const Login = () => {
     const [message, setMessage] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-
-    const dispatch = useDispatch();
     
-
+    const cookies = new Cookies();
+    
     const handleSubmit = (e) => {
         e.preventDefault();
         const url = "http://localhost:5000/api/auth/login";
@@ -76,26 +73,19 @@ const Login = () => {
             'password': password
         }
         const config = {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            //credentials:'include',
-            withCredentials: true
         }
 
         axios.post(url, params, config)
             .then((result) => {
-                dispatch(login(result.data.username,result.data._id ));
+                cookies.set("username", result.data.username);
+                window.location.replace("/");
             })
             .catch((err) => {
                 setError(true);
-                if(err.response){
-                    setMessage(err.response.data);
-                }else{
-                    setMessage("failed connecting to server");
-                }
-                console.log(err);
+                setMessage("failed connecting to server");
+                console.log("login error "+err);
             })
+
     }
     return (
         <Outercontainer>

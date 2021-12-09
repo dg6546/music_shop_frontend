@@ -1,10 +1,13 @@
 import { Search, ShoppingCart } from '@material-ui/icons';
-import React from 'react'
+import React, { useState } from 'react'
 import styled from "styled-components";
 import ReactAudioPlayer from 'react-audio-player';
 import { Link } from 'react-router-dom';
 import { Add, Remove } from '@material-ui/icons'
-
+import axios from 'axios';
+import {getCart} from "../actions/index"
+import { useDispatch } from 'react-redux';
+import Cookies from 'universal-cookie/es6';
 const Container = styled.div`
     display: flex;
     min-width: 150px;
@@ -82,7 +85,7 @@ const AddContainer = styled.div`
     justify-content: space-between;
 `
 
-const Amount = styled.span`
+const Amount = styled.div`
     width: 30px;
     height: 30px;
     border-radius: 10px;
@@ -97,7 +100,57 @@ const NewArrival = styled.span`
     padding: 5px 0px 5px;
 `
 
+const MessageDiv = styled.div`
+    color: red;
+    justify-content: center;
+`
+
 const Item = ({ item }) => {
+    const [message, setMessage] = useState("");
+    const [quantity, setQuantity] = useState(1);
+
+    const dispatch = useDispatch();
+    const cookies = new Cookies();
+
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        withCredentials: true
+    }
+
+    const handleAddCart = () =>{
+        console.log("id: " + item._id + " type: " + typeof(item._id));
+        console.log("quantity" + quantity + " type: " + typeof(quantity));
+        axios.post("http://localhost:5000/api/cart/add",{
+            id: item._id,
+            quantity: quantity
+        } ,config)
+        .catch((err) => {
+            if(err.response){
+                setMessage(err.response.data);
+            }else{
+                setMessage("failed connecting to server");
+            }
+            console.log(err);})
+        .then( (res) => {
+            console.log(res.data);
+            console.log("products:" + res.data.products);
+            setMessage("Added to cart!");
+        })
+    }
+
+    const handleQuantity = (type) =>{
+        if(type === "dec"){
+            if(quantity - 1 <= 0){
+                setQuantity(1);
+            }else{
+                setQuantity(quantity - 1);
+            }
+        }else{
+            setQuantity(quantity + 1);
+        }
+    }
     return (
         <Container>
             <ImageWrapper><Image src={process.env.PUBLIC_URL + "/data/img/" + item.image} /></ImageWrapper>
@@ -118,14 +171,15 @@ const Item = ({ item }) => {
                     <Icon> <Link to={`/song/${item._id}`} style={{ textDecoration: 'none', color: "black" }}> <Search /> </Link>  </Icon>
                     <AddContainer>
                         <QuantityContainer>
-                            <Remove />
-                            <Amount>1</Amount>
-                            <Add />
+                            <Remove onClick={()=>handleQuantity("dec")}/>
+                            <Amount>{quantity}</Amount>
+                            <Add onClick={()=>handleQuantity("inc")}/>
                         </QuantityContainer>
-                        
                     </AddContainer>
-                    <Icon> <ShoppingCart /> </Icon>
+                    <Icon> <ShoppingCart onClick={()=>handleAddCart()}/> </Icon>
+                    
                 </IconWrapper>
+                {message? <MessageDiv>{message}</MessageDiv> : ""}
             </Info>
         </Container>
     )

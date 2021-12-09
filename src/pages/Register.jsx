@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { useState } from "react";
 import axios from "axios";
-import { Redirect } from 'react-router';
 
 const Container = styled.div`
     width: 100%;
