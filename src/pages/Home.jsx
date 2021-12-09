@@ -27,13 +27,14 @@ const Home = () => {
   
 const location = useLocation();
 const cat = location.pathname.split("/")[2];
+const ty = location.pathname.split("/")[1];
   return (
     <Container>
       <MainBody>
         <Left>
           <Category />
         </Left>
-        <Right><ItemsPage cat={cat} /></Right>
+        <Right><ItemsPage cat={cat} ty={ty} /></Right>
       </MainBody>
     </Container>
   );

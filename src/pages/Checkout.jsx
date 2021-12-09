@@ -104,9 +104,6 @@ const Summary = styled.div`
     padding: 20px;
 `
 
-const SummaryTitle = styled.h1`
-    font-weight: 200;
-`
 
 const SummaryItem = styled.div`
     margin: 30px 0px;

@@ -1,6 +1,6 @@
 import { Badge } from "@material-ui/core";
 import { Album, Search, ShoppingCartOutlined } from "@material-ui/icons";
-import React from "react";
+import React, {useState} from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { mobile } from "../responsive"
@@ -83,6 +83,7 @@ const UsernameSpan = styled.span`
 
 const Navbar = () => {
   const cookies = new Cookies();
+  const [searchword, setSearchword] = useState("");
   const isLogged = cookies.get('username') === undefined ? false : true;
   const username = cookies.get('username'); 
   const cart = useSelector(state => state.cartReducer);
@@ -99,8 +100,11 @@ const Navbar = () => {
         </Left>
         <Center>
           <SearchContainer>
-            <Input placeholder="Search music..." />
-            <Search style={{ color: "gray", fontSize: "16px", cursor: "pointer" }} />
+            <Input placeholder="Search music..." onChange={(e) => {setSearchword(e.target.value)}}/>
+            <Link to={`/search/${searchword}`} style={{ textDecoration: 'underline'}}>
+            <Search 
+            style={{ color: "gray", fontSize: "16px", cursor: "pointer" }} />
+            </Link>
           </SearchContainer>
         </Center>
           {

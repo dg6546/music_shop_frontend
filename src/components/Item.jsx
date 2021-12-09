@@ -5,9 +5,6 @@ import ReactAudioPlayer from 'react-audio-player';
 import { Link } from 'react-router-dom';
 import { Add, Remove } from '@material-ui/icons'
 import axios from 'axios';
-import {getCart} from "../actions/index"
-import { useDispatch } from 'react-redux';
-import Cookies from 'universal-cookie/es6';
 const Container = styled.div`
     display: flex;
     min-width: 150px;
@@ -109,8 +106,6 @@ const Item = ({ item }) => {
     const [message, setMessage] = useState("");
     const [quantity, setQuantity] = useState(1);
 
-    const dispatch = useDispatch();
-    const cookies = new Cookies();
 
     const config = {
         headers: {

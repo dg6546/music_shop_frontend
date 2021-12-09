@@ -24,6 +24,7 @@ const App = () => {
                 <Switch>
                     <Route exact path="/"><Home /></Route>
                     <Route path="/songs/:category"><Home /></Route>
+                    <Route path="/search/:keywords"><Home /></Route>
                     <Route path="/song/:id"><Detail /></Route>
                     <Route path="/cart"><Cart /></Route>
                     <Route path="/register">{isLogged? <Redirect to="/" /> : <Register />}</Route>

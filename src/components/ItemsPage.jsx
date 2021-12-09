@@ -4,8 +4,6 @@ import styled from "styled-components";
 import Item from './Item'
 import { useState } from 'react';
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
-import { getCart } from "../actions/index"
 
 const Container = styled.div`
   display: flex;
@@ -18,28 +16,44 @@ const TitleDiv = styled.div`
     font-weight: 800;
 `
 
-const ItemsPage = ({ cat }) => {
+const ItemsPage = ({ cat, ty }) => {
+    console.log(cat, ty);
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [items, setItems] = useState([]);
 
+    
+
     if (typeof(cat) === 'undefined'){
         cat = "";
     }
-    const dispatch = useDispatch();
     useEffect(() => {
-        axios.get('http://localhost:5000/api/searchByCategories/?category=' + cat)
-        .catch(error => {
-            setIsLoaded(true);
-            setError(error);
-        })
-        .then((result) => {
-            console.log(result);
+        if (ty === "search"){
+            axios.get('http://localhost:5000/api/searchSongs?search=' + cat)
+            .catch(error => {
                 setIsLoaded(true);
-                setItems(result.data);
-            }
-        )
-    }, [cat]);
+                setError(error);
+            })
+            .then((result) => {
+                console.log(result);
+                    setIsLoaded(true);
+                    setItems(result.data);
+                }
+            )
+        }else{
+            axios.get('http://localhost:5000/api/searchByCategories/?category=' + cat)
+            .catch(error => {
+                setIsLoaded(true);
+                setError(error);
+            })
+            .then((result) => {
+                console.log(result);
+                    setIsLoaded(true);
+                    setItems(result.data);
+                }
+            )
+        }
+    }, [cat, ty]);
 
     if (error) {
         return (

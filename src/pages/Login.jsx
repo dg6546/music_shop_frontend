@@ -66,16 +66,15 @@ const Login = () => {
     
     const handleSubmit = (e) => {
         e.preventDefault();
-        const url = "http://localhost:5000/api/auth/login";
 
-        const params = {
+        axios.post("http://localhost:5000/api/auth/login", {
             'username': username,
             'password': password
-        }
-        const config = {
-        }
-
-        axios.post(url, params, config)
+        },  {
+            headers: {
+                'Content-Type': 'application/json'
+            }, withCredentials: true
+        })
             .then((result) => {
                 cookies.set("username", result.data.username);
                 window.location.replace("/");
